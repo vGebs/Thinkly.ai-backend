@@ -1,0 +1,13 @@
+When we want to get back into our project, we have the do the following.
+
+1. Go to the directory when the environment is installed
+2. call this in terminal % source venv/bin/activate
+3. To leave the environment we simply call % deactivate
+
+
+Make sure the interpretter is being used: 
+
+VS Code: If you are using Visual Studio Code, select the Python interpreter from your venv 
+    by clicking on the Python version in the bottom left corner (or by using the command 
+    palette (Cmd/Ctrl+Shift+P), and typing/selecting Python: Select Interpreter). Then choose 
+    the interpreter inside your venv.
