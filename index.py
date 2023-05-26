@@ -93,5 +93,36 @@ for index, week in enumerate(weeklyContent):
 
 # Creating final object and print
 finalObject = create_final_object(content_dict_no_newlines, weeklyContent)
+# print("Final object: ------------------------->")
+# print(finalObject)
+
+# Everything is correct down to here
+
+# ok, we have the final object.
+# now we need to loop through the class outline for each day of each week and make an outline for the notes
+
+weeklyContent = finalObject["weeklyContent"]
+
+for index, week in enumerate(weeklyContent):
+    topics = week["topics"]
+    for index2, topic in enumerate(topics):
+        prePrompt = "Given these topics"
+        prePrompt_plus_topics = prePrompt + json.dumps(topics, indent=4)
+        topicNumber = index2 + 1
+        conclusion = f"""Create an outline of topic {topicNumber} with bullets on what will be discussed so we can use 
+            this outline to make notes for the students. Output in json with this format:
+            {{'topicName': 'String', 'readings': ['String'], 'outline': [{{'heading': 'String', 'subtopics': ['String']}}]}}
+        """
+
+        final = prePrompt_plus_topics + "\n" + conclusion
+
+        res = create_chat_model_prompt(final)
+        responseWithNewLine = res.choices[0].message["content"]
+        content_dict = json.loads(responseWithNewLine)
+        contentNoNewLines = remove_newlines(content_dict)
+        weeklyContent[index]["topics"][index2] = contentNoNewLines
+
+
+newFinalObject = create_final_object(finalObject, weeklyContent)
 print("Final object: ------------------------->")
-print(finalObject)
+print(newFinalObject)
