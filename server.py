@@ -164,6 +164,32 @@ def getOutlineForSubtopic():
     return content_dict_no_newlines, 200
 
 
+@app.route("/getOutlineForSubSubtopic", methods=["POST"])
+def getOutlineForSubSubtopic():
+    data = request.get_json()
+
+    outlineNumber = data.get("outlineNumber")
+    subtopic = data.get("subtopic")
+
+    prePrompt = "Given this subtopic: "
+    midPrompt = prePrompt + json.dumps(subtopic, indent=4)
+
+    conclusion = f"""
+    Create an outline for outline number {outlineNumber} with bullets on what will be discussed so we can use this outline to make 
+    notes for students. Ouput in this JSON format:
+    {{"subtopic": {{"title": String, "outline": [String]}}}}
+    Do not respond to this message, simply output the JSON object.
+    """
+
+    final = midPrompt + "\n" + conclusion
+
+    res = create_chat_model_prompt(final)
+    content_dict = parse_response_content(res)
+    content_dict_no_newlines = remove_newlines(content_dict)
+
+    return content_dict_no_newlines, 200
+
+
 @app.route("/writeContentForSubtopic", methods=["POST"])
 def writeContentForSubtopic():
     returns = {"title": "Sub bitch x 4"}
