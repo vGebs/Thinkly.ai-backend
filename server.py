@@ -57,16 +57,13 @@ def getWeeklyContent():
     week = data.get("week")
     course_json = data.get("course")
 
-    # Convert the JSON object to a string
-    course_string = json.dumps(course_json)
-
     # Initial OpenAI request
     initial_prompt = f""" 
-        Generate a course outline based on the following details:
-        {course_string}
+        Generate a course outline based on the following details for each week:
+        {course_json}
         Please output the course outline in json defined as follows: 
 
-        weeklyContent: [{{"week": Int, "topics":  [{{"topicName": String, readings: [String]}}]}}]
+        weeklyContent: [{{"week": Int, "topics":  [{{"topicName": String, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}]
     
         Output week {week} only.
     """
@@ -82,7 +79,27 @@ def getWeeklyContent():
 # After the teacher has gotten the entire weeklyContent they may want to update a specific week, that's what this endpoint is for
 @app.route("/updateWeekContent", methods=["POST"])
 def updateWeekContent():
-    return 200
+    # get the entire json
+    data = request.get_json()
+    week = data.get("week")
+    course_json = data.get("course")
+
+    prompt = f"""
+        Regenerate the outline for weeklyContent week {week} given this object:
+        {course_json}
+        
+        Please output the weekly outline in json format defined as follows:
+        
+        weeklyContent: [{{"week": Int, "topics":  [{{"topicName": String, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}]
+    """
+
+    response = create_chat_model_prompt(prompt)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_response_content(response)
+    content_dict_no_newlines = remove_newlines(content_dict)
+
+    return content_dict_no_newlines, 200
 
 
 # Input for layer 2 prompt:
@@ -136,16 +153,16 @@ def updateWeekContent():
 # }
 # layer 2 prompt
 @app.route("/getClassOutline", methods=["POST"])
-def getClassOutline(classObject):
+def getClassOutline():
     data = request.get_json()
-    courseOutline = data.get("courseOutline")
-    weekNumber = data.get("weekNumber")
+    course = data.get("course")
+    weekNumber = data.get("week")
 
-    classesPerWeek = courseOutline.get("classesPerWeek")
-    classLengthInHours = courseOutline.get("classLengthInHours")
+    classesPerWeek = course.get("classesPerWeek")
+    classLengthInHours = course.get("classLengthInHours")
 
     prePrompt = "Given this course: "
-    prePrompt_plus_course = prePrompt + json.dumps(courseOutline, indent=4)
+    prePrompt_plus_course = prePrompt + json.dumps(course, indent=4)
     conclusion = f"""Assuming I am a teacher, create a class outline
         for week {weekNumber} for a course with {classesPerWeek} classes per week, each lasting {classLengthInHours} hour.
         Include learning objectives, required materials, and a class procedure with time allocations.
