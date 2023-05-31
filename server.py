@@ -46,11 +46,11 @@ def getWeeklyContent():
 
     # Initial OpenAI request
     initial_prompt = f""" 
-        Generate a course outline based on the following details for each week:
+        Generate a course outline based on the following details:
         {course_json}
         Please output the course outline in json defined as follows: 
 
-        weeklyContent: [{{"week": Int, "topics":  [{{"topicName": String, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}]
+        weeklyContent: {{"week": Int, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
     
         Output week {week} only.
     """
@@ -77,7 +77,7 @@ def updateWeekContent():
         
         Please output the weekly outline in json format defined as follows:
         
-        weeklyContent: [{{"week": Int, "topics":  [{{"topicName": String, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}]
+        weeklyContent: {{"week": Int, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
     """
 
     response = create_chat_model_prompt(prompt)
@@ -116,8 +116,6 @@ def getClassOutline():
     return content_dict_no_newlines, 200
 
 
-# Input for layer 3 prompt:
-# Input topics + the topicIndex
 @app.route("/getNotesOutlineForTopic", methods=["POST"])
 def getNotesOutlineForTopic():
     data = request.get_json()
@@ -140,33 +138,32 @@ def getNotesOutlineForTopic():
     return content_dict_no_newlines, 200
 
 
-# layer 4 prompt
 @app.route("/getOutlineForSubtopic", methods=["POST"])
 def getOutlineForSubtopic():
-    # returns = {"title": "Sub bitch x 4"}
-
     data = request.get_json()
-    outlines = data.get("outline")
+
     outlineIndex = data.get("outlineIndex")
     subtopicIndex = data.get("subtopicIndex")
+    outlines = data.get("outline")
 
     prePrompt = "Given these outlines: "
     midPrompt = prePrompt + json.dumps(outlines, indent=4)
-    conclusion = f"""Create an outline of what should be discussed within the 
-        subtopic for the subsections of each outline[{outlineIndex}]["subtopic"][{subtopicIndex}]. Output in this JSON format:
-        {{"subtopic": {{"title": String, "outline": [String]}}}}"""
+
+    conclusion = f"""Create an outline for outline[{outlineIndex}]["subtopic"][{subtopicIndex}] with bullets on what will be discussed 
+        so we can use this outline to make notes for the students. Output in this JSON format:
+        {{"subtopic": {{"title": String, "outline": [String]}}}}
+        Do not respond to this message, simply output the JSON object.
+        """
 
     final = midPrompt + "\n" + conclusion
 
     res = create_chat_model_prompt(final)
-    responseWithNewLine = res.choices[0].message["content"]
-    content_dict = json.loads(responseWithNewLine)
-    contentNoNewLines = remove_newlines(content_dict)
+    content_dict = parse_response_content(res)
+    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return contentNoNewLines, 200
+    return content_dict_no_newlines, 200
 
 
-# layer 5 prompt
 @app.route("/writeContentForSubtopic", methods=["POST"])
 def writeContentForSubtopic():
     returns = {"title": "Sub bitch x 4"}
