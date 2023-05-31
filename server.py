@@ -192,9 +192,32 @@ def getOutlineForSubSubtopic():
 
 @app.route("/writeContentForSubtopic", methods=["POST"])
 def writeContentForSubtopic():
-    returns = {"title": "Sub bitch x 4"}
+    data = request.get_json()
 
-    return returns, 200
+    outlineIndex = data.get("outlineIndex")
+    subtopicIndex = data.get("subtopicIndex")
+    subtopicOutlineIndex = data.get("subtopicOutlineIndex")
+
+    outline = data.get("outline")
+
+    prePrompt = "Given this outline: "
+    midPrompt = prePrompt + json.dumps(outline, indent=4)
+
+    conclusion = f"""
+    Write a comprehensive piece for outline[{outlineIndex}]["subtopics"][{subtopicIndex}]["outline"][{subtopicOutlineIndex}] that is approximately 3 paragraphs in length additionally, feel free
+    to list some main concepts in bullet format.
+    Output in this JSON format:
+    {{"title": String, content: String}}
+    Do not respond to this prompt, simply output the json.
+    """
+
+    final = midPrompt + "\n" + conclusion
+
+    res = create_chat_model_prompt(final)
+    content_dict = parse_response_content(res)
+    content_dict_no_newlines = remove_newlines(content_dict)
+
+    return content_dict_no_newlines, 200
 
 
 if __name__ == "__main__":
