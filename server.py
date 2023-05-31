@@ -122,23 +122,22 @@ def getClassOutline():
 def getNotesOutlineForTopic():
     data = request.get_json()
     topics = data.get("topics")
-    topicNumber = data.get("topicIndex")
+    topicNumber = data.get("topicNumber")
 
     prePrompt = "Given these topics:"
     prePrompt_plus_topics = prePrompt + json.dumps(topics, indent=4)
-    conclusion = f"""Create an outline of topic {topicNumber} with bullets on what will be discussed so we can use 
+    conclusion = f"""Create an outline for topic number {topicNumber} with bullets on what will be discussed so we can use 
         this outline to make notes for the students. Output in json with this format:
-        {{"topicName": String, "readings": [String], "outline": [{{"heading": String, "subtopics": [String]}}]}}
+        {{"topicName": String, "readings": [{{"textBook": String, "chapter": Int}}], "outline": [{{"heading": String, "subtopics": [String]}}]}}
     """
 
     final = prePrompt_plus_topics + "\n" + conclusion
 
     res = create_chat_model_prompt(final)
-    responseWithNewLine = res.choices[0].message["content"]
-    content_dict = json.loads(responseWithNewLine)
-    contentNoNewLines = remove_newlines(content_dict)
+    content_dict = parse_response_content(res)
+    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return contentNoNewLines, 200
+    return content_dict_no_newlines, 200
 
 
 # layer 4 prompt
