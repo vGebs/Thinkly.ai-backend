@@ -37,19 +37,6 @@ def remove_newlines(obj):
         return obj
 
 
-# Input layer 1 prompt Object:
-# {
-#     "courseName": "Object Oriented Programming",
-#     "courseDurationInWeeks": 15,
-#     "classLengthInHours": 1,
-#     "classesPerWeek": 3,
-#     "studyHoursPerWeek": 10,
-#     "gradeLevel": "University - Year 2",
-#     "textBookReferences": ["Clean Code by Robert C. Martin", "Design Patterns: Elements of Reusable Object-Oriented Software by  Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides", "Object-Oriented Programming in C++ (4th Edition) by Robert Lafore"],
-#     "learningObjectives": ["Understanding the Fundamental Concepts of Object-Oriented Programming (OOP)", "Utilization of Advanced OOP Concepts and Techniques", "Understanding and Applying Design Patterns in OOP"],
-#     "preRequisites": ["Intro to programming"],
-#     "topicPreferences": ["Class Design and Encapsulation", "Inheritance and Polymorphism", "Widely used design patterns"]
-# }
 @app.route("/getWeeklyContent", methods=["POST"])
 def getWeeklyContent():
     # Get the entire JSON object
@@ -102,56 +89,6 @@ def updateWeekContent():
     return content_dict_no_newlines, 200
 
 
-# Input for layer 2 prompt:
-# {
-#     weekNumber: Int,
-#     courseOutline: {
-#         "classLengthInHours": 1,
-#         "classesPerWeek": 3,
-#         "courseDurationInWeeks": 15,
-#         "courseName": "Object Oriented Programming",
-#         "gradeLevel": "University - Year 2",
-#         "learningObjectives": [
-#             "Understanding the Fundamental Concepts of Object-Oriented Programming (OOP)",
-#             "Utilization of Advanced OOP Concepts and Techniques",
-#             "Understanding and Applying Design Patterns in OOP"
-#         ],
-#         "preRequisites": [
-#             "Intro to programming"
-#         ],
-#         "studyHoursPerWeek": 10,
-#         "textBookReferences": [
-#             "Clean Code by Robert C. Martin",
-#             "Design Patterns: Elements of Reusable Object-Oriented Software by  Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
-#             "Object-Oriented Programming in C++ (4th Edition) by Robert Lafore"
-#         ],
-#         "topicPreferences": [
-#             "Class Design and Encapsulation",
-#             "Inheritance and Polymorphism",
-#             "Widely used design patterns"
-#         ],
-#         "weeklyContent": [
-#             {
-#                 "topics": [
-#                     {
-#                         "readings": [
-#                             "Clean Code chapter 1"
-#                         ],
-#                         "topicName": "Introduction to OOP"
-#                     },
-#                     {
-#                         "readings": [
-#                             "Object-Oriented Programming in C++ chapter 1"
-#                         ],
-#                         "topicName": "Classes and Objects"
-#                     }
-#                 ],
-#                 "week": 1
-#             },
-#         ]
-#     }
-# }
-# layer 2 prompt
 @app.route("/getClassOutline", methods=["POST"])
 def getClassOutline():
     data = request.get_json()
@@ -173,11 +110,10 @@ def getClassOutline():
     final_prompt = prePrompt_plus_course + "\n" + conclusion
 
     res = create_chat_model_prompt(final_prompt)
-    responseWithNewLine = res.choices[0].message["content"]
-    content_dict = json.loads(responseWithNewLine)
-    contentNoNewLines = remove_newlines(content_dict)
+    content_dict = parse_response_content(res)
+    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return contentNoNewLines, 200
+    return content_dict_no_newlines, 200
 
 
 # Input for layer 3 prompt:
