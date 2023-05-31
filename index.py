@@ -82,6 +82,8 @@ content_dict = parse_response_content(response)
 content_dict_no_newlines = remove_newlines(content_dict)
 weeklyContent = content_dict_no_newlines["weeklyContent"]
 
+print("Got weeklyContent -------------------->>>")
+
 # Iterating over weeks for new requests and updates
 for index, week in enumerate(weeklyContent):
     final_prompt = create_final_prompt(content_dict_no_newlines, week, index)
@@ -90,6 +92,7 @@ for index, week in enumerate(weeklyContent):
     content_dict = json.loads(responseWithNewLine)
     contentNoNewLines = remove_newlines(content_dict)
     weeklyContent[index] = contentNoNewLines
+    print("Update weeklyContent ----------------->>>")
 
 # Creating final object and print
 finalObject = create_final_object(content_dict_no_newlines, weeklyContent)
@@ -106,12 +109,12 @@ weeklyContent = finalObject["weeklyContent"]
 for index, week in enumerate(weeklyContent):
     topics = week["topics"]
     for index2, topic in enumerate(topics):
-        prePrompt = "Given these topics"
+        prePrompt = "Given these topics:"
         prePrompt_plus_topics = prePrompt + json.dumps(topics, indent=4)
         topicNumber = index2 + 1
         conclusion = f"""Create an outline of topic {topicNumber} with bullets on what will be discussed so we can use 
             this outline to make notes for the students. Output in json with this format:
-            {{'topicName': 'String', 'readings': ['String'], 'outline': [{{'heading': 'String', 'subtopics': ['String']}}]}}
+            {{"topicName": String, "readings": [String], "outline": [{{"heading": String, "subtopics": [String]}}]}}
         """
 
         final = prePrompt_plus_topics + "\n" + conclusion
@@ -121,8 +124,42 @@ for index, week in enumerate(weeklyContent):
         content_dict = json.loads(responseWithNewLine)
         contentNoNewLines = remove_newlines(content_dict)
         weeklyContent[index]["topics"][index2] = contentNoNewLines
+        print("Got new outline for topic ------------->>>")
 
 
 newFinalObject = create_final_object(finalObject, weeklyContent)
-print("Final object: ------------------------->")
-print(newFinalObject)
+# print("Final object: ------------------------->")
+# print(newFinalObject)
+
+weeklyContent = newFinalObject["weeklyContent"]
+
+for index, week in enumerate(weeklyContent):
+    topics = week["topics"]
+    for index1, topic in enumerate(topics):
+        outlines = topic["outline"]
+        for index2, outline in enumerate(outlines):
+            subTopics = outline["subtopics"]
+            for index3, subtopic in enumerate(subTopics):
+                prePrompt = "Given these outlines: "
+                midPrompt = prePrompt + json.dumps(outlines, indent=4)
+                conclusion = f"""Create an outline of what should be discussed within the 
+                subtopic for the subsections of each outline[{index1}]["subtopic"][{index2}]. Output in this JSON format:
+                {{"subtopic": {{"title": String, "outline": [String]}}}}"""
+
+                final = midPrompt + "\n" + conclusion
+
+                res = create_chat_model_prompt(final)
+                responseWithNewLine = res.choices[0].message["content"]
+                content_dict = json.loads(responseWithNewLine)
+                contentNoNewLines = remove_newlines(content_dict)
+
+                weeklyContent[index]["topics"][index1]["outline"][index2]["subtopics"][
+                    index3
+                ] = contentNoNewLines
+                print("Got subtopics for topic ----------------->>>")
+
+
+ff = create_final_object(newFinalObject, weeklyContent)
+
+print("Final object ------------------------->>>")
+print(ff)
