@@ -8,9 +8,9 @@ import openai
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-from courseCreationRoutes import bp as courseCreation_bp
-from courseDefinitionRoutes import bp as courseDef_bp
-from assignmentCreation import bp as assignmentCreation_bp
+from routes.courseCreationRoutes import bp as courseCreation_bp
+from routes.courseDefinitionRoutes import bp as courseDef_bp
+from routes.assignmentCreationRoutes import bp as assignmentCreation_bp
 
 app = Flask(__name__)
 
