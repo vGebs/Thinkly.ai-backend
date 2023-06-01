@@ -3,7 +3,7 @@ from helpers import create_chat_model_prompt, parse_response_content, remove_new
 import json
 
 # Create a Blueprint instance
-bp = Blueprint("main", __name__)
+bp = Blueprint("courseCreation", __name__)
 
 
 @bp.route("/getWeeklyContent", methods=["POST"])
