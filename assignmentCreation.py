@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from helpers import create_chat_model_prompt, parse_response_content, remove_newlines
+from helpers import create_chat_model_prompt, parse_response_content
 import json
 
 # Create a Blueprint instance
@@ -29,9 +29,8 @@ def getAssignment():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 # Generate a single question given existing questions
@@ -68,9 +67,8 @@ def makeQuestion():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 # Write this question in more depth
@@ -96,22 +94,35 @@ def addDepthToQuestion():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 # Generate a comprehensive answer for this question
 @bp.route("/makeAnswer", methods=["POST"])
 def makeAnswer():
+    question = request.get_json()
+
     prompt = f"""
+        Given this question:
         
+        {question},
+        
+        Provide a detailed answer that would result in full marks.
+        
+        Output the answer in this JSON format:
+        
+        {{"question": String, "answer": String}}
+        
+        Do not respond to this message, simply output the JSON object.
+        Do not include Control characters.
     """
 
     response = create_chat_model_prompt(prompt)
+    print("response------------------------>>>>>")
+    print(response)
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200

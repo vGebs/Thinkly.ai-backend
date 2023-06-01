@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from helpers import create_chat_model_prompt, parse_response_content, remove_newlines
+from helpers import create_chat_model_prompt, parse_response_content
 import json
 
 # Create a Blueprint instance
@@ -30,9 +30,8 @@ def getWeeklyContent():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 # After the teacher has gotten the entire weeklyContent they may want to update a specific week, that's what this endpoint is for
@@ -57,9 +56,8 @@ def updateWeekContent():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getClassOutline", methods=["POST"])
@@ -89,9 +87,8 @@ def getClassOutline():
 
     res = create_chat_model_prompt(final_prompt)
     content_dict = parse_response_content(res)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getNotesOutlineForTopic", methods=["POST"])
@@ -117,9 +114,8 @@ def getNotesOutlineForTopic():
 
     res = create_chat_model_prompt(final)
     content_dict = parse_response_content(res)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getOutlineForSubtopic", methods=["POST"])
@@ -148,9 +144,8 @@ def getOutlineForSubtopic():
 
     res = create_chat_model_prompt(final)
     content_dict = parse_response_content(res)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getOutlineForSubSubtopic", methods=["POST"])
@@ -178,9 +173,8 @@ def getOutlineForSubSubtopic():
 
     res = create_chat_model_prompt(final)
     content_dict = parse_response_content(res)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/writeContentForSubtopic", methods=["POST"])
@@ -210,6 +204,5 @@ def writeContentForSubtopic():
 
     res = create_chat_model_prompt(final)
     content_dict = parse_response_content(res)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200

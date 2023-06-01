@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from helpers import create_chat_model_prompt, parse_response_content, remove_newlines
+from helpers import create_chat_model_prompt, parse_response_content
 import json
 
 # Create a Blueprint instance
@@ -28,9 +28,8 @@ def findTextbookOverlap():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getLearningObjectives", methods=["POST"])
@@ -52,9 +51,8 @@ def getLearningObjectives():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getCourseTitleSuggestion", methods=["POST"])
@@ -79,9 +77,8 @@ def getCourseTitleSuggestion():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
 
 
 @bp.route("/getPrerequisites", methods=["POST"])
@@ -113,6 +110,5 @@ def getPrerequisites():
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
-    content_dict_no_newlines = remove_newlines(content_dict)
 
-    return content_dict_no_newlines, 200
+    return content_dict, 200
