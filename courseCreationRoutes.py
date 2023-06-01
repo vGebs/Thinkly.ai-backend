@@ -62,6 +62,7 @@ def updateWeekContent():
         Please output the weekly outline in json format defined as follows:
         
         weeklyContent: {{"week": Int, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
+        Do not respond to this message, simply output the JSON.
     """
 
     response = create_chat_model_prompt(prompt)
@@ -84,12 +85,17 @@ def getClassOutline():
 
     prePrompt = "Given this course: "
     prePrompt_plus_course = prePrompt + json.dumps(course, indent=4)
-    conclusion = f"""Assuming I am a teacher, create a class outline
-        for week {weekNumber} for a course with {classesPerWeek} classes per week, each lasting {classLengthInHours} hour.
+    conclusion = f"""
+        Assuming I am a teacher, create a class outline for week {weekNumber} for a course with {classesPerWeek} classes per 
+        week, each lasting {classLengthInHours} hour.
+        
         Include learning objectives, required materials, and a class procedure with time allocations.
-        Output as JSON with this format: {{'week': Int, 'topics': [{{'topicName': String, 'readings': [String]}}],
-        'classOutline': [{{'classNumber': Int, 'learningObjectives': [String], 'classProcedure': [{{'time': String,
-        'activity': String}}], 'requiredMaterials': [String]}}]}}"""
+        
+        Output as JSON with this format: 
+        {{'week': Int, 'topics': [{{'topicName': String, 'readings': [String]}}], 'classOutline': [{{'classNumber': Int, 'learningObjectives': [String], 'classProcedure': [{{'time': String, 'activity': String}}], 'requiredMaterials': [String]}}]}}
+        
+        Do not respond to this message, simply output the JSON.
+        """
 
     final_prompt = prePrompt_plus_course + "\n" + conclusion
 
@@ -108,9 +114,15 @@ def getNotesOutlineForTopic():
 
     prePrompt = "Given these topics:"
     prePrompt_plus_topics = prePrompt + json.dumps(topics, indent=4)
-    conclusion = f"""Create an outline for topic number {topicNumber} with bullets on what will be discussed so we can use 
-        this outline to make notes for the students. Output in json with this format:
+    conclusion = f"""
+        Create an outline for topic number {topicNumber} with bullets on what will be discussed so we can use 
+        this outline to make notes for the students. 
+        
+        Output in json with this format:
+        
         {{"topicName": String, "readings": [{{"textBook": String, "chapter": Int}}], "outline": [{{"heading": String, "subtopics": [String]}}]}}
+        
+        Do not respond to this message, simply output the JSON.
     """
 
     final = prePrompt_plus_topics + "\n" + conclusion
@@ -133,9 +145,14 @@ def getOutlineForSubtopic():
     prePrompt = "Given these outlines: "
     midPrompt = prePrompt + json.dumps(outlines, indent=4)
 
-    conclusion = f"""Create an outline for outline[{outlineIndex}]["subtopic"][{subtopicIndex}] with bullets on what will be discussed 
-        so we can use this outline to make notes for the students. Output in this JSON format:
+    conclusion = f"""
+        Create an outline for outline[{outlineIndex}]["subtopic"][{subtopicIndex}] with bullets on what will be discussed 
+        so we can use this outline to make notes for the students. 
+        
+        Output in this JSON format:
+        
         {{"subtopic": {{"title": String, "outline": [String]}}}}
+        
         Do not respond to this message, simply output the JSON object.
         """
 
@@ -160,8 +177,12 @@ def getOutlineForSubSubtopic():
 
     conclusion = f"""
     Create an outline for outline number {outlineNumber} with bullets on what will be discussed so we can use this outline to make 
-    notes for students. Ouput in this JSON format:
+    notes for students. 
+    
+    Ouput in this JSON format:
+    
     {{"subtopic": {{"title": String, "outline": [String]}}}}
+
     Do not respond to this message, simply output the JSON object.
     """
 
@@ -188,11 +209,13 @@ def writeContentForSubtopic():
     midPrompt = prePrompt + json.dumps(outline, indent=4)
 
     conclusion = f"""
-    Write a comprehensive piece for outline[{outlineIndex}]["subtopics"][{subtopicIndex}]["outline"][{subtopicOutlineIndex}] that is approximately 3 paragraphs in length additionally, feel free
-    to list some main concepts in bullet format.
-    Output in this JSON format:
-    {{"title": String, content: String}}
-    Do not respond to this prompt, simply output the json.
+        Write a comprehensive piece for outline[{outlineIndex}]["subtopics"][{subtopicIndex}]["outline"][{subtopicOutlineIndex}] that 
+        is approximately 3 paragraphs in length additionally, feel free to list some main concepts in bullet format.
+    
+        Output in this JSON format:
+        {{"title": String, content: String}}
+        
+        Do not respond to this prompt, simply output the json.
     """
 
     final = midPrompt + "\n" + conclusion
