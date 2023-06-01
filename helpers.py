@@ -4,7 +4,7 @@ import json
 
 def create_chat_model_prompt(content: str) -> dict:
     return openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role": "user", "content": content},
         ],
