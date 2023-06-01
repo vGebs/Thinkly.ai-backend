@@ -76,8 +76,20 @@ def makeQuestion():
 # Write this question in more depth
 @bp.route("/addDepthToQuestion", methods=["POST"])
 def addDepthToQuestion():
+    question = request.get_json()
+
     prompt = f"""
+        Given this question:
         
+        "{question}".
+        
+        Write this question in more depth.
+        
+        Ouput in this JSON format:
+        
+        {{"question": String, "difficultyLevelOutOfTen": Int}}
+        
+        Do not respond to this message, simply out the the JSON object.
     """
 
     response = create_chat_model_prompt(prompt)
