@@ -57,11 +57,62 @@ def getLearningObjectives():
     return content_dict_no_newlines, 200
 
 
-@bp.route("/getPrerequisites", methods=["POST"])
-def getPrerequisites():
-    return 200
-
-
 @bp.route("/getCourseTitleSuggestion", methods=["POST"])
 def getCourseTitleSuggestion():
-    return 200
+    learningObjectives = request.get_json()
+
+    prompt = f"""
+        Given these learning objectives:
+        
+        {learningObjectives}
+        
+        Generate a list of 5 possible titles for the course with their associated description.
+        
+        Output in this JSON format:
+        
+        titles: [{{"courseTitle": String, "courseDescription": String}}]
+        
+        Do not respond to this message, simply output in JSON.
+    """
+
+    response = create_chat_model_prompt(prompt)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_response_content(response)
+    content_dict_no_newlines = remove_newlines(content_dict)
+
+    return content_dict_no_newlines, 200
+
+
+@bp.route("/getPrerequisites", methods=["POST"])
+def getPrerequisites():
+    data = request.get_json()
+
+    textbooks = data.get("textbooks")
+    learningObjectives = data.get("learningObjectives")
+    courseOverview = data.get("courseOverview")
+
+    prompt = f"""
+        Given these textbooks:
+        {textbooks},
+        
+        These learning objectives:
+        {learningObjectives},
+        
+        and the course overview:
+        {courseOverview},
+        
+        Generate a list or prerequisites in this JSON format:
+        
+        prerequisites: [{{"title": String, "description": String}}] 
+        
+        Do not respond to this message, simply output in JSON.
+    """
+
+    response = create_chat_model_prompt(prompt)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_response_content(response)
+    content_dict_no_newlines = remove_newlines(content_dict)
+
+    return content_dict_no_newlines, 200
