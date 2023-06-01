@@ -13,12 +13,6 @@ def getWeeklyContent():
     week = data.get("week")
     course_json = data.get("course")
 
-    numAssignments = course_json.get("assessments").get("assignments").get("count")
-    numExams = course_json.get("assessments").get("exams").get("count")
-    numQuizzes = course_json.get("assessments").get("quizzes").get("count")
-    numLabs = course_json.get("assessments").get("labs").get("count")
-    durationOfCourse = course_json.get("courseDurationInWeeks")
-
     # Initial OpenAI request
     initial_prompt = f""" 
         Generate a course outline based on the following details:
@@ -26,15 +20,9 @@ def getWeeklyContent():
         
         Please output the course outline in json defined as follows: 
 
-        weeklyContent: {{"week": Int, "ifLab": {{"title": String, "description": String"}}, "ifAssignment": {{"title": String, "description": String"}}, "ifExam": {{"title": String, "description": String"}}, "ifQuiz": {{"title": String, "description": String"}}, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
+        weeklyContent: {{"week": Int, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
     
         Output week {week} only.
-        
-        Please bear in mind the number there are {numAssignments} assignments, {numExams} exams, {numQuizzes} quizzes, and {numLabs} labs.
-        
-        Make sure they are event distributed across the {durationOfCourse} weeks.
-        
-        Additionally, please make sure that labs and assignments are alternating weeks.
         
         Do not respond to this message, simply output the JSON.
     """
@@ -61,7 +49,7 @@ def updateWeekContent():
         
         Please output the weekly outline in json format defined as follows:
         
-        weeklyContent: {{"week": Int, "ifLab_title": String, "ifAssignment_title": String, "ifExam_title": String, "ifQuiz_title": String, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
+        weeklyContent: {{"week": Int, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
         Do not respond to this message, simply output the JSON.
     """
 
