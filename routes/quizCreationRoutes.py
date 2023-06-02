@@ -38,8 +38,29 @@ def generateQuiz():
 def generateQuizQuestion():
     data = request.get_json()
 
+    quizParams = data.get("quizParameters")
+    questions = data.get("existingQuestions")
+    outline = data.get("weeklyOutline")
+    difficulty = data.get("difficultyLevelOutOfTen")
+
     prompt = f"""
-    
+        Given these quiz parameters: 
+        
+        {quizParams},
+        
+        these existing questions:
+        
+        {questions},
+        
+        and this outline:
+        
+        {outline},
+        
+        Generate one question with {difficulty}/10 difficulty and output in this JSON format:
+        
+        {{"question": String, "possibleAnswers": [String], "correctAnswer": String, "questionType": String}}
+        
+        Do not respond to this message, simply output the JSON object.
     """
 
     response = create_chat_model_prompt(prompt)
