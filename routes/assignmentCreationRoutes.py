@@ -119,8 +119,47 @@ def makeAnswer():
     """
 
     response = create_chat_model_prompt(prompt)
-    print("response------------------------>>>>>")
-    print(response)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
+@bp.route("/assignment/chatAboutAssignmentQuestion", methods=["post"])
+def askQuestionAboutAssignment():
+    data = request.get_json()
+    chat = data.get("chat")
+    assignment = data.get("assignmentProblem")
+    textbooks = data.get("courseTextbooks")
+
+    prompt = f"""
+        Given this student's question/ the current gpt chat:
+        
+        {chat},
+        
+        the assignment problem itself:
+        
+        {assignment},
+        
+        and the reading material for this course:
+        
+        {textbooks},
+        
+        Address their question and provide a brief answer to their question and then provide them with 
+        specific books and chapters /resources to read regarding their question. I also want you to 
+        give them encouragement and show them empathy.
+        
+        Output your response in this JSON format:
+        
+        {{"assignmentProblem": String, "studentQuestion": String, gptResponse: String}}
+        
+        If the student asks the assignment problem (or have reworded the assignment problem), do not give them a direct answer.
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+
+    response = create_chat_model_prompt(prompt)
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
