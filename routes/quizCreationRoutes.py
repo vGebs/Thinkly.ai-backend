@@ -74,9 +74,23 @@ def generateQuizQuestion():
 @bp.route("/addDepthToQuizQuestion", methods=["POST"])
 def addDepthToQuizQuestion():
     data = request.get_json()
-
+    question = data.get("question")
     prompt = f"""
-    
+        Given this question:
+        
+        "{question}".
+        
+        And the whole question outline:
+        
+        {data},
+        
+        Write this question in more depth.
+        
+        Ouput in this JSON format:
+        
+        {{"question": String, "possibleAnswers": [String], "correctAnswer": String, "questionType": String}}
+        
+        Do not respond to this message, simply out the the JSON object.
     """
 
     response = create_chat_model_prompt(prompt)
