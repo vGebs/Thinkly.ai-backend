@@ -6,7 +6,7 @@ import json
 bp = Blueprint("quizCreation", __name__)
 
 
-@bp.route("/generateQuiz", methods=["POST"])
+@bp.route("/quiz/generateQuiz", methods=["POST"])
 def generateQuiz():
     data = request.get_json()
 
@@ -34,7 +34,7 @@ def generateQuiz():
     return content_dict, 200
 
 
-@bp.route("/generateQuizQuestion", methods=["POST"])
+@bp.route("/quiz/generateQuestion", methods=["POST"])
 def generateQuizQuestion():
     data = request.get_json()
 
@@ -71,7 +71,7 @@ def generateQuizQuestion():
     return content_dict, 200
 
 
-@bp.route("/addDepthToQuizQuestion", methods=["POST"])
+@bp.route("/quiz/addDepthToQuestion", methods=["POST"])
 def addDepthToQuizQuestion():
     data = request.get_json()
     question = data.get("question")

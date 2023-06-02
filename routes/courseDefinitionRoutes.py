@@ -6,7 +6,7 @@ import json
 bp = Blueprint("courseDefinition", __name__)
 
 
-@bp.route("/findTextbookOverlap", methods=["POST"])
+@bp.route("/courseDefinition/findTextbookOverlap", methods=["POST"])
 def findTextbookOverlap():
     textbooks = request.get_json()
 
@@ -32,7 +32,7 @@ def findTextbookOverlap():
     return content_dict, 200
 
 
-@bp.route("/getLearningObjectives", methods=["POST"])
+@bp.route("/courseDefinition/getLearningObjectives", methods=["POST"])
 def getLearningObjectives():
     concepts = request.get_json()
 
@@ -55,7 +55,7 @@ def getLearningObjectives():
     return content_dict, 200
 
 
-@bp.route("/getCourseTitleSuggestion", methods=["POST"])
+@bp.route("/courseDefinition/getCourseTitleSuggestion", methods=["POST"])
 def getCourseTitleSuggestion():
     learningObjectives = request.get_json()
 
@@ -81,7 +81,7 @@ def getCourseTitleSuggestion():
     return content_dict, 200
 
 
-@bp.route("/getPrerequisites", methods=["POST"])
+@bp.route("/courseDefinition/getPrerequisites", methods=["POST"])
 def getPrerequisites():
     data = request.get_json()
 

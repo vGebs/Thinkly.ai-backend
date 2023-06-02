@@ -6,7 +6,7 @@ import json
 bp = Blueprint("assignmentCreation", __name__)
 
 
-@bp.route("/makeAssignment", methods=["POST"])
+@bp.route("/assignment/makeAssignment", methods=["POST"])
 def getAssignment():
     data = request.get_json()
     difficulty = data.get("difficultyOutOfTen")
@@ -34,7 +34,7 @@ def getAssignment():
 
 
 # Generate a single question given existing questions
-@bp.route("/makeQuestion", methods=["POST"])
+@bp.route("/assignment/makeQuestion", methods=["POST"])
 def makeQuestion():
     data = request.get_json()
 
@@ -72,7 +72,7 @@ def makeQuestion():
 
 
 # Write this question in more depth
-@bp.route("/addDepthToQuestion", methods=["POST"])
+@bp.route("/assignment/addDepthToQuestion", methods=["POST"])
 def addDepthToQuestion():
     question = request.get_json()
 
@@ -99,7 +99,7 @@ def addDepthToQuestion():
 
 
 # Generate a comprehensive answer for this question
-@bp.route("/makeAnswer", methods=["POST"])
+@bp.route("/assignment/makeAnswer", methods=["POST"])
 def makeAnswer():
     question = request.get_json()
 

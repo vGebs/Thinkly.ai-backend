@@ -6,7 +6,7 @@ import json
 bp = Blueprint("courseCreation", __name__)
 
 
-@bp.route("/getWeeklyContent", methods=["POST"])
+@bp.route("/courseCreation/getWeeklyContent", methods=["POST"])
 def getWeeklyContent():
     # Get the entire JSON object
     data = request.get_json()
@@ -35,7 +35,7 @@ def getWeeklyContent():
 
 
 # After the teacher has gotten the entire weeklyContent they may want to update a specific week, that's what this endpoint is for
-@bp.route("/updateWeekContent", methods=["POST"])
+@bp.route("/courseCreation/updateWeekContent", methods=["POST"])
 def updateWeekContent():
     # get the entire json
     data = request.get_json()
@@ -60,7 +60,7 @@ def updateWeekContent():
     return content_dict, 200
 
 
-@bp.route("/getClassOutline", methods=["POST"])
+@bp.route("/courseCreation/getClassOutline", methods=["POST"])
 def getClassOutline():
     data = request.get_json()
     course = data.get("course")
@@ -91,7 +91,7 @@ def getClassOutline():
     return content_dict, 200
 
 
-@bp.route("/getNotesOutlineForTopic", methods=["POST"])
+@bp.route("/courseCreation/getNotesOutlineForTopic", methods=["POST"])
 def getNotesOutlineForTopic():
     data = request.get_json()
     topics = data.get("topics")
@@ -118,7 +118,7 @@ def getNotesOutlineForTopic():
     return content_dict, 200
 
 
-@bp.route("/getOutlineForSubtopic", methods=["POST"])
+@bp.route("/courseCreation/getOutlineForSubtopic", methods=["POST"])
 def getOutlineForSubtopic():
     data = request.get_json()
 
@@ -148,7 +148,7 @@ def getOutlineForSubtopic():
     return content_dict, 200
 
 
-@bp.route("/getOutlineForSubSubtopic", methods=["POST"])
+@bp.route("/courseCreation/getOutlineForSubSubtopic", methods=["POST"])
 def getOutlineForSubSubtopic():
     data = request.get_json()
 
@@ -177,7 +177,7 @@ def getOutlineForSubSubtopic():
     return content_dict, 200
 
 
-@bp.route("/writeContentForSubtopic", methods=["POST"])
+@bp.route("/courseCreation/writeContentForSubtopic", methods=["POST"])
 def writeContentForSubtopic():
     data = request.get_json()
 
