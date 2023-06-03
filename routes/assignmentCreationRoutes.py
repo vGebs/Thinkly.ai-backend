@@ -98,6 +98,7 @@ def addDepthToQuestion():
     return content_dict, 200
 
 
+# Deprecating: Updating and moving to gradingRoutes --------------------------------------------------->>>>>>>>>>>
 # Generate a comprehensive answer for this question
 @bp.route("/assignment/makeAnswer", methods=["POST"])
 def makeAnswer():
@@ -148,7 +149,7 @@ def askQuestionAboutAssignment():
         
         Address their question and provide a brief answer to their question and then provide them with 
         specific books and chapters /resources to read regarding their question. I also want you to 
-        give them encouragement and show them empathy.
+        give them encouragement and show them empathy but do not be condescending.
         
         Output your response in this JSON format:
         
