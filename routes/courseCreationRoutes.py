@@ -206,3 +206,38 @@ def writeContentForSubtopic():
     content_dict = parse_response_content(res)
 
     return content_dict, 200
+
+
+@bp.route("/courseCreation/addDepth", methods=["POST"])
+def addDepth():
+    data = request.get_json()
+
+    outline = data.get("outline")
+    title = data.get("title")
+    content = data.get("content")
+
+    prompt = f"""
+        Given this outline for the week:
+        
+        {outline},
+        
+        and the notes for this section:
+        
+        {title},
+        {content},
+        
+        Add more depth to the notes by making it more comprehensive while making sure not to overlap with other subtopics in the outline.
+        
+        Output in this JSON format:
+        
+        {{"title": String, "content": String}}
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+
+    response = create_chat_model_prompt(prompt)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
