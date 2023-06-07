@@ -98,35 +98,6 @@ def addDepthToQuestion():
     return content_dict, 200
 
 
-# Deprecating: Updating and moving to gradingRoutes --------------------------------------------------->>>>>>>>>>>
-# Generate a comprehensive answer for this question
-@bp.route("/assignment/makeAnswer", methods=["POST"])
-def makeAnswer():
-    question = request.get_json()
-
-    prompt = f"""
-        Given this question:
-        
-        {question},
-        
-        Provide a detailed answer that would result in full marks.
-        
-        Output the answer in this JSON format:
-        
-        {{"question": String, "answer": String}}
-        
-        Do not respond to this message, simply output the JSON object.
-        Do not include Control characters.
-    """
-
-    response = create_chat_model_prompt(prompt)
-
-    # Parsing and cleaning up the content
-    content_dict = parse_response_content(response)
-
-    return content_dict, 200
-
-
 @bp.route("/assignment/chatAboutAssignmentQuestion", methods=["post"])
 def askQuestionAboutAssignment():
     data = request.get_json()
