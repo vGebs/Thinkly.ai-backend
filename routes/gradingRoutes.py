@@ -1,5 +1,9 @@
 from flask import request, Blueprint
-from helpers import create_chat_model_prompt, parse_response_content
+from helpers import (
+    create_chat_model_prompt,
+    parse_response_content,
+    parse_multiple_response_content,
+)
 import json
 
 # Create a Blueprint instance
@@ -44,9 +48,17 @@ def gradeAnswer():
     exercise = data.get("exercise")
     studentAnswer = data.get("studentAnswer")
     rubric = data.get("rubric")
-    perfectAnswer = data.get("perfectAnswer")
     gradeLevel = data.get("gradeLevel")
 
+    responses = getGradingResponses(exercise, studentAnswer, rubric, gradeLevel)
+    finalResponse = getAverageScore(
+        exercise, studentAnswer, rubric, gradeLevel, responses
+    )
+
+    return finalResponse, 200
+
+
+def getGradingResponses(exercise, studentAnswer, rubric, gradeLevel):
     prompt = f"""
         Prentend you are a teacher.
         
@@ -75,12 +87,49 @@ def gradeAnswer():
         Do not respond to this message, simply output the JSON object.
     """
 
+    response = create_chat_model_prompt(prompt, 3)
+
+    # Parsing and cleaning up the content
+    content_dict = parse_multiple_response_content(response)
+
+    return content_dict
+
+
+def getAverageScore(exercise, studentAnswer, rubric, gradeLevel, responses):
+    prompt = f"""
+        Prentend you are a teacher.
+        
+        Given this course assignment exercise:
+        
+        {exercise},
+        
+        the student's answer:
+        
+        {studentAnswer},
+        
+        and this grading rubric:
+        
+        {rubric},
+        
+        and the list of graded responses:
+        
+        {responses}.
+
+        Take the average of the graded responses.
+        
+        Output in this JSON format:
+        
+        {{"scoring": [{{"criterion_name": String, "scoreOutOfOneHundred": Int, "rationalForScore": String}}], "finalGradeBeforeScaler_outOfOneHundred": Int, "finalGradeAfterScaler_outOfOneHundred": Int}}
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+
     response = create_chat_model_prompt(prompt)
 
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
 
-    return content_dict, 200
+    return content_dict
 
 
 @bp.route("/grading/makeAppeal", methods=["POST"])
