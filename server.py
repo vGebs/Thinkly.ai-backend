@@ -13,7 +13,7 @@ from routes.courseDefinitionRoutes import bp as courseDef_bp
 from routes.assignmentCreationRoutes import bp as assignmentCreation_bp
 from routes.quizCreationRoutes import bp as quizCreation_bp
 from routes.gradingRoutes import bp as grades_bp
-
+from routes.noteQuestionRoutes import bp as notesQs_bp
 
 app = Flask(__name__)
 
@@ -22,6 +22,7 @@ app.register_blueprint(courseDef_bp)
 app.register_blueprint(assignmentCreation_bp)
 app.register_blueprint(quizCreation_bp)
 app.register_blueprint(grades_bp)
+app.register_blueprint(notesQs_bp)
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
