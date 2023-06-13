@@ -21,7 +21,7 @@ def findTextbookOverlap():
         
         Only include the overlap if the rating is greater than 5.
         
-        Do not respond to this message, simply output in JSON.
+        Do not respond to this message, simply output in JSON, do not elaborate either.
     """
 
     response = create_chat_model_prompt(prompt)
@@ -68,7 +68,7 @@ def getCourseTitleSuggestion():
         
         Output in this JSON format:
         
-        titles: [{{"courseTitle": String, "courseDescription": String}}]
+        courseOverview: [{{"courseTitle": String, "courseDescription": String}}]
         
         Do not respond to this message, simply output in JSON.
     """
@@ -101,7 +101,7 @@ def getPrerequisites():
         
         Generate a list or prerequisites in this JSON format:
         
-        prerequisites: [{{"title": String, "description": String}}] 
+        prerequisites: [{{"prerequisiteTitle": String, "prerequisiteDescription": String}}] 
         
         Do not respond to this message, simply output in JSON.
     """

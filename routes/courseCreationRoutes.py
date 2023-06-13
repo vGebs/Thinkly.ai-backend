@@ -20,7 +20,7 @@ def getWeeklyContent():
         
         Please output the course outline in json defined as follows: 
 
-        weeklyContent: {{"week": Int, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
+        weeklyContent: {{"week": Int, "assessments": [{{"assessmentType": String, "assessmentTitle": String, "assessmentDescription": String}}], "topics":  [{{"topicName": String, readings: [{{"textbook": String, "chapter": Int}}]}}]}}
     
         Output week {week} only.
         
@@ -48,7 +48,7 @@ def updateWeekContent():
         
         Please output the weekly outline in json format defined as follows:
         
-        weeklyContent: {{"week": Int, "topics":  [{{"topicName": String, readings: [{{"textBook": String, "chapter": Int}}]}}]}}
+        weeklyContent: {{"week": Int, "assessments": [{{"assessmentType": String, "assessmentTitle": String, "assessmentDescription": String}}], "topics":  [{{"topicName": String, readings: [{{"textbook": String, "chapter": Int}}]}}]}}
         Do not respond to this message, simply output the JSON.
     """
 
@@ -66,8 +66,9 @@ def getClassOutline():
     course = data.get("course")
     weekNumber = data.get("week")
 
-    classesPerWeek = course.get("classesPerWeek")
-    classLengthInHours = course.get("classLengthInHours")
+    courseTimingStructure = course.get("courseTimingStructure")
+    classesPerWeek = courseTimingStructure.get("classesPerWeek")
+    classLengthInHours = courseTimingStructure.get("classLengthInHours")
 
     prePrompt = "Given this course: "
     prePrompt_plus_course = prePrompt + json.dumps(course, indent=4)
@@ -105,7 +106,7 @@ def getNotesOutlineForTopic():
         
         Output in json with this format:
         
-        {{"topicName": String, "readings": [{{"textBook": String, "chapter": Int}}], "outline": [{{"heading": String, "subtopics": [String]}}]}}
+        {{"topicName": String, "readings": [{{"textbook": String, "chapter": Int}}], "outline": [{{"heading": String, "subtopics": [String]}}]}}
         
         Do not respond to this message, simply output the JSON.
     """
