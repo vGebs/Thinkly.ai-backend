@@ -6,6 +6,32 @@ import json
 bp = Blueprint("courseCreation", __name__)
 
 
+@bp.route("/generatePreliminaryCurriculum/getWeeklyContent", methods=["POST"])
+def generatePreliminaryCurriculum():
+    data = request.get_json()
+    timingStructure = data.get("courseTimingStructure")
+
+    initial_prompt = f"""
+        Give this course definition:
+        {data},
+    
+        Generate a comprehensive curriculum given the timing structure of the course:
+        {timingStructure}.
+        
+        Output the curriculum in this json format:
+        {{"curriculum": [{{"weekNumber": Int, "topicTitle": String, "topicDescription": String}}]}}
+        
+        NOTE: Do not add a project to the end.
+        
+        Do not respond to this message, simply output in the JSON format.
+    """
+
+    response = create_chat_model_prompt(initial_prompt)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
 @bp.route("/courseCreation/getWeeklyContent", methods=["POST"])
 def getWeeklyContent():
     # Get the entire JSON object
@@ -79,7 +105,7 @@ def getClassOutline():
         Include learning objectives, required materials, and a class procedure with time allocations.
         
         Output as JSON with this format: 
-        {{'week': Int, 'topics': [{{'topicName': String, 'readings': [String]}}], 'classOutline': [{{'classNumber': Int, 'learningObjectives': [String], 'classProcedure': [{{'time': String, 'activity': String}}], 'requiredMaterials': [String]}}]}}
+        {{'classOutline': [{{'classNumber': Int, 'learningObjectives': [String], 'classProcedure': [{{'time': String, 'activity': String}}], 'requiredMaterials': [String]}}]}}
         
         Do not respond to this message, simply output the JSON.
         """
@@ -106,7 +132,7 @@ def getNotesOutlineForTopic():
         
         Output in json with this format:
         
-        {{"topicName": String, "readings": [{{"textbook": String, "chapter": Int}}], "outline": [{{"heading": String, "subtopics": [String]}}]}}
+        {{"outline": [{{"heading": String, "subtopics": [String]}}]}}
         
         Do not respond to this message, simply output the JSON.
     """
@@ -136,7 +162,7 @@ def getOutlineForSubtopic():
         
         Output in this JSON format:
         
-        {{"subtopic": {{"title": String, "outline": [String]}}}}
+        {{"title": String, "outline": [String]}}
         
         Do not respond to this message, simply output the JSON object.
         """

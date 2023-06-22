@@ -17,6 +17,12 @@ from routes.noteQuestionRoutes import bp as notesQs_bp
 
 app = Flask(__name__)
 
+
+@app.route("/ping", methods=["GET"])
+def ping():
+    return {"response": "ok"}, 200
+
+
 app.register_blueprint(courseCreation_bp)
 app.register_blueprint(courseDef_bp)
 app.register_blueprint(assignmentCreation_bp)
@@ -25,4 +31,4 @@ app.register_blueprint(grades_bp)
 app.register_blueprint(notesQs_bp)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3000)
+    app.run(port=3000, host="0.0.0.0", debug=True)
