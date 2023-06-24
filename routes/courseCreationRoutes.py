@@ -6,20 +6,22 @@ import json
 bp = Blueprint("courseCreation", __name__)
 
 
-@bp.route("/generatePreliminaryCurriculum/getWeeklyContent", methods=["POST"])
+@bp.route("/courseCreation/generatePreliminaryCurriculumForWeek", methods=["POST"])
 def generatePreliminaryCurriculum():
     data = request.get_json()
-    timingStructure = data.get("courseTimingStructure")
+    course = data.get("course")
+    weekNumber = data.get("weekNumber")
+    totalWeeks = data.get("totalWeeks")
 
     initial_prompt = f"""
         Give this course definition:
-        {data},
+        {course},
     
-        Generate a comprehensive curriculum given the timing structure of the course:
-        {timingStructure}.
+        
+        Given that the course is {totalWeeks} long, generate a topic for the curriculum for this week number: {weekNumber},
         
         Output the curriculum in this json format:
-        {{"curriculum": [{{"weekNumber": Int, "topicTitle": String, "topicDescription": String}}]}}
+        {{"weekNumber": Int, "topicTitle": String, "topicDescription": String}}
         
         NOTE: Do not add a project to the end.
         
