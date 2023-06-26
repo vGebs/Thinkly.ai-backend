@@ -6,6 +6,30 @@ import json
 bp = Blueprint("courseDefinition", __name__)
 
 
+@bp.route("/courseDefinition/generateLearningObjectiveFromUserPrompt", methods=["POST"])
+def generateLearningObjectiveFromUserPrompt():
+    userPrompt = request.get_json()
+
+    initial_prompt = f""" 
+        Here is the user's prompt:
+
+        {userPrompt}
+       
+        Create a comprehensive list of learning objectives that adheres to the user's request.
+
+        Output as this JSON object:
+
+        {{"learningObjectives": [{{"objectiveTitle": String, "objectiveDescription": String}}]}}
+
+        Do not respond to this message, simply output the JSON.
+    """
+
+    response = create_chat_model_prompt(initial_prompt)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
 @bp.route("/courseDefinition/findTextbookOverlap", methods=["POST"])
 def findTextbookOverlap():
     textbooks = request.get_json()
@@ -42,7 +66,7 @@ def getLearningObjectives():
         
         Create a list of learning objectives based on the concepts in this JSON format:
         
-        learningObjectives: [{{"objectiveTitle": String, "description": String}}]
+        learningObjectives: [{{"objectiveTitle": String, "objectiveDescription": String}}]
         
         Do not respond to this message, simply output in JSON.
     """
