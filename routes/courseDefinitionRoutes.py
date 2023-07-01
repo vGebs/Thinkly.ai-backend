@@ -6,6 +6,30 @@ import json
 bp = Blueprint("courseDefinition", __name__)
 
 
+@bp.route("/courseDefinition/generateTextbooksFromUserPrompt", methods=["POST"])
+def generateTextbooksFromUserPrompt():
+    userPrompt = request.get_json()
+
+    initial_prompt = f""" 
+        Here is the user's prompt:
+
+        {userPrompt}
+       
+        Create a comprehensive list of textbooks that adheres to the user's request.
+
+        Output as this JSON object:
+
+        {{"textbooks": [{{"title": String, "author": String}}]}}
+
+        Do not respond to this message, simply output the JSON.
+    """
+
+    response = create_chat_model_prompt(initial_prompt)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
 @bp.route("/courseDefinition/generateLearningObjectiveFromUserPrompt", methods=["POST"])
 def generateLearningObjectiveFromUserPrompt():
     userPrompt = request.get_json()
@@ -37,7 +61,7 @@ def findTextbookOverlap():
     prompt = f"""
         Given these textbooks:
         {textbooks}
-        List the overlapping ideas between them and order them in order of precedence.
+        Generate a comprehensive list of overlapping ideas between them and order them in order of precedence.
 
         Output this information in this JSON format:
 
