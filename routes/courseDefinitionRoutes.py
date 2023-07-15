@@ -116,14 +116,13 @@ def getCourseTitleSuggestion():
         
         Output in this JSON format:
         
-        courseOverview: [{{"courseTitle": String, "courseDescription": String}}]
+        {{"courseOverview": [{{"courseTitle": String, "courseDescription": String}}]}}
         
-        Do not respond to this message, simply output in JSON.
+        Do not respond to this message, simply output in JSON format.
     """
 
     response = create_chat_model_prompt(prompt)
 
-    # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
 
     return content_dict, 200

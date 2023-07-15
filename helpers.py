@@ -9,7 +9,7 @@ def remove_control_characters(s):
 
 def create_chat_model_prompt(content: str, n=1) -> dict:
     return openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-0613",
         n=n,
         messages=[
             {"role": "user", "content": content},
