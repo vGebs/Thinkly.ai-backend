@@ -103,6 +103,31 @@ def getLearningObjectives():
     return content_dict, 200
 
 
+@bp.route("/courseDefinition/getCourseTitleSuggestionFromCurriculum", methods=["POST"])
+def getCourseTitleSuggestionFromCurriculum():
+    curriculum = request.get_json()
+
+    prompt = f"""
+        Given this curriculum:
+        
+        {curriculum}.
+        
+        Generate a list of 5 possible titles for the course with their associated description.
+        
+        Output in this JSON format:
+        
+        {{"courseOverview": [{{"courseTitle": String, "courseDescription": String}}]}}
+        
+        Do not respond to this message, simply output in JSON format.
+    """
+
+    response = create_chat_model_prompt(prompt)
+
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
 @bp.route("/courseDefinition/getCourseTitleSuggestion", methods=["POST"])
 def getCourseTitleSuggestion():
     learningObjectives = request.get_json()
