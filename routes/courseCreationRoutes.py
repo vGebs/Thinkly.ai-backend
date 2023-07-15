@@ -6,29 +6,25 @@ import json
 bp = Blueprint("courseCreation", __name__)
 
 
-@bp.route("/courseCreation/generatePreliminaryCurriculumForWeek", methods=["POST"])
-def generatePreliminaryCurriculum():
-    data = request.get_json()
-    course = data.get("course")
-    weekNumber = data.get("weekNumber")
-    totalWeeks = data.get("totalWeeks")
-
-    initial_prompt = f"""
-        Give this course definition:
-        {course},
-    
+@bp.route("/courseCreation/generateCurriculum", methods=["POST"])
+def generateCurriculum():
+    userPrompt = request.get_json()
+    print("we innit")
+    prompt = f"""
+        Give this users prompt:
+        {userPrompt},
         
-        Given that the course is {totalWeeks} long, generate a topic for the curriculum for this week number: {weekNumber},
+        Generate a comprehensive curriculum for this topic.
         
-        Output the curriculum in this json format:
-        {{"weekNumber": Int, "topicTitle": String, "topicDescription": String}}
+        Do not include a final exam/ project/ assignments/ quizzes.
         
-        NOTE: Do not add a project to the end.
+        Output the units in this JSON format:
+        {{"units": [{{"unitTitle": String, "unitDescription": String, "unitNumber": Int}}]}}
         
-        Do not respond to this message, simply output in the JSON format.
+        Do not respond to this message, simply output the JSON object.
     """
 
-    response = create_chat_model_prompt(initial_prompt)
+    response = create_chat_model_prompt(prompt)
     content_dict = parse_response_content(response)
 
     return content_dict, 200
