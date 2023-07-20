@@ -9,7 +9,6 @@ bp = Blueprint("courseCreation", __name__)
 @bp.route("/courseCreation/generateCurriculum", methods=["POST"])
 def generateCurriculum():
     userPrompt = request.get_json()
-    print("we innit")
     prompt = f"""
         Give this users prompt:
         {userPrompt},
@@ -25,6 +24,31 @@ def generateCurriculum():
     """
 
     response = create_chat_model_prompt(prompt)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
+@bp.route("/courseCreation/generateSubTopicsForUnit", methods=["POST"])
+def generateSubTopicsForUnit():
+    data = request.get_json()
+    print("after data")
+    curriculum = data.get("curriculum")
+    unitNumber = data.get("unitNumber")
+    prompt = f"""
+        Given this curriculum:
+        {curriculum},
+        
+        Create a list of subtopics for unit number {unitNumber}. Make sure to take the other units into consideration before making the subtopics.
+
+        output in this json format:
+
+        {{"subUnits": [{{"unitTitle": String, "unitDescription": String, "unitNumber": Double}}]}}
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+    response = create_chat_model_prompt(prompt)
+    print(response)
     content_dict = parse_response_content(response)
 
     return content_dict, 200
