@@ -32,7 +32,6 @@ def generateCurriculum():
 @bp.route("/courseCreation/generateSubTopicsForUnit", methods=["POST"])
 def generateSubTopicsForUnit():
     data = request.get_json()
-    print("after data")
     curriculum = data.get("curriculum")
     unitNumber = data.get("unitNumber")
     prompt = f"""
@@ -47,6 +46,62 @@ def generateSubTopicsForUnit():
         
         Do not respond to this message, simply output the JSON object.
     """
+    response = create_chat_model_prompt(prompt)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
+@bp.route("/courseCreation/generateLessonsForSubunit", methods=["POST"])
+def generateLessonsForSubunit():
+    data = request.get_json()
+    curriculum = data.get("curriculum")
+    subunitNumber = data.get("subunitNumber")
+    prompt = f""" 
+        Given this Curriculum:
+        {curriculum},
+        
+        Create a list of subunits for subunit number {subunitNumber}, ie 1.1.1. Make sure to take the other sub units into account before making the lessons.
+        
+        output in this json format:
+
+        {{"lessons": [{{"lessonTitle": String, "lessonDescription": String, "lessonNumber": String}}]}}
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+
+    response = create_chat_model_prompt(prompt)
+    print(response)
+    content_dict = parse_response_content(response)
+
+    return content_dict, 200
+
+
+@bp.route("/courseCreation/generateNotesForLesson", methods=["POST"])
+def generateNotesForLesson():
+    data = request.get_json()
+    unit = data.get("unit")
+    print("Unit")
+    print(unit)
+    lessonNumber = data.get("lessonNumber")
+    print("LessonNumber:")
+    print(lessonNumber)
+
+    prompt = f""" 
+        Given this unit:
+        {unit},
+        
+        Write 5 comprehensive paragraphs for lesson {lessonNumber} that will give the reader a very good understanding of the lesson.
+        
+        Output in the following JSON format:
+        
+        {{"notes": [{{"paragraph": String}}]}}
+        
+        Ouput each paragraph in its own string.
+        
+        Do not respond to this message, simply output the JSON object.
+    """
+
     response = create_chat_model_prompt(prompt)
     print(response)
     content_dict = parse_response_content(response)
