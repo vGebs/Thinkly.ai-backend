@@ -61,7 +61,10 @@ def generateLessonsForSubunit():
         Given this Curriculum:
         {curriculum},
         
-        Create a list of subunits for subunit number {subunitNumber}, ie 1.1.1. Make sure to take the other sub units into account before making the lessons.
+        Create a list of lessons for subunit number {subunitNumber}. Make sure to take the other sub units into account before making the lessons.
+        
+        if subunit number is 2.1, then the lesson numbers will be 2.1.1, 2.1.2, and so on.
+        Furthermore, if the subunit number is 3.3, then the lesson numbers will be 3.3.1, 3.3.2, and so on.
         
         output in this json format:
 
@@ -81,17 +84,14 @@ def generateLessonsForSubunit():
 def generateNotesForLesson():
     data = request.get_json()
     unit = data.get("unit")
-    print("Unit")
-    print(unit)
     lessonNumber = data.get("lessonNumber")
-    print("LessonNumber:")
-    print(lessonNumber)
 
     prompt = f""" 
         Given this unit:
         {unit},
         
-        Write 5 comprehensive paragraphs for lesson {lessonNumber} that will give the reader a very good understanding of the lesson.
+        Write 6 comprehensive paragraphs for lesson {lessonNumber} that will give the reader a very good understanding of the lesson.
+        These will be the notes the students will read such that they can study, this is not intended to be an intro, these are the topics the students will be studying.
         
         Output in the following JSON format:
         
