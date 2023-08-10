@@ -9,24 +9,38 @@ bp = Blueprint("assignmentCreation", __name__)
 @bp.route("/assignment/makeAssignment", methods=["POST"])
 def getAssignment():
     data = request.get_json()
-    difficulty = data.get("difficultyOutOfTen")
+
+    # difficulty = data.get("difficultyOutOfTen")
+
+    # prompt = f"""
+    #     Given this assignment description:
+
+    #     {data},
+
+    #     Generate an assignment.
+
+    #     Output in the following JSON format:
+
+    #     questions: [{{"question": String, "difficultyLevelOutOfTen": Int}}]
+
+    #     Do not respond to this message, simply output in JSON.
+    # """
 
     prompt = f"""
-        Given this assignment description:
+        Given this unit: {data},
         
-        {data},
-        
-        Generate an assignment.
+        Generate an assignment consisting of 5 questions that cover the material from the unit and make sure each question gets more challenging.
         
         Output in the following JSON format:
+        {{"questions": [String]}}
         
-        questions: [{{"question": String, "difficultyLevelOutOfTen": Int}}]
+        Begin every question with the (index + 1), for example question 1 will start like this: "1. ....."
         
-        Do not respond to this message, simply output in JSON.
+        Do not respond to this message, simply output the JSON object.
     """
 
     response = create_chat_model_prompt(prompt)
-
+    print(response)
     # Parsing and cleaning up the content
     content_dict = parse_response_content(response)
 
