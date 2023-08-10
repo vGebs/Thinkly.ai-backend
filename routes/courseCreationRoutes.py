@@ -90,8 +90,9 @@ def generateNotesForLesson():
         Given this unit:
         {unit},
         
-        Write 6 comprehensive paragraphs for lesson {lessonNumber} that will give the reader a very good understanding of the lesson.
-        These will be the notes the students will read such that they can study, this is not intended to be an intro, these are the topics the students will be studying.
+        Write the notes for this lesson that the students will use to study. Write as many comprehensive paragraphs as necessary for lesson {lessonNumber}.
+        The first paragraph will be the title and the rest will be the reading material.
+        Make to sure to make the text engaging yet informational.
         
         Output in the following JSON format:
         
