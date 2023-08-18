@@ -7,6 +7,8 @@ def remove_control_characters(s):
     return re.sub(r"[\x00-\x1F\x7F]", "", s)
 
 
+# gpt-4-0613
+# gpt-3.5-turbo-0613
 def create_chat_model_prompt(content: str, n=1) -> dict:
     return openai.ChatCompletion.create(
         model="gpt-4-0613",
