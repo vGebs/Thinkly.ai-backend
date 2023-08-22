@@ -1,6 +1,7 @@
 from flask import request, Blueprint
 from helpers import create_chat_model_prompt, parse_response_content
 import json
+from billing import pushUsage
 
 # Create a Blueprint instance
 bp = Blueprint("courseDefinition", __name__)
@@ -105,7 +106,13 @@ def getLearningObjectives():
 
 @bp.route("/courseDefinition/getCourseTitleSuggestionFromCurriculum", methods=["POST"])
 def getCourseTitleSuggestionFromCurriculum():
-    curriculum = request.get_json()
+    input = request.get_json()
+    curriculum = input.get("units")
+    uid = input.get("uid")
+
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
 
     prompt = f"""
         Given this curriculum:
@@ -122,7 +129,10 @@ def getCourseTitleSuggestionFromCurriculum():
     """
 
     response = create_chat_model_prompt(prompt)
+    usage = response["usage"]
+    usage["uid"] = uid
 
+    pushUsage(usage)
     content_dict = parse_response_content(response)
 
     return content_dict, 200

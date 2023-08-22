@@ -1,6 +1,7 @@
 from flask import request, Blueprint
 from helpers import create_chat_model_prompt, parse_response_content
 import json
+from billing import pushUsage
 
 # Create a Blueprint instance
 bp = Blueprint("assignmentCreation", __name__)
@@ -9,25 +10,15 @@ bp = Blueprint("assignmentCreation", __name__)
 @bp.route("/assignment/makeAssignment", methods=["POST"])
 def getAssignment():
     data = request.get_json()
+    subunit = data.get("subunit")
+    uid = data.get("uid")
 
-    # difficulty = data.get("difficultyOutOfTen")
-
-    # prompt = f"""
-    #     Given this assignment description:
-
-    #     {data},
-
-    #     Generate an assignment.
-
-    #     Output in the following JSON format:
-
-    #     questions: [{{"question": String, "difficultyLevelOutOfTen": Int}}]
-
-    #     Do not respond to this message, simply output in JSON.
-    # """
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
 
     prompt = f"""
-        Given this unit: {data},
+        Given this unit: {subunit},
         
         Generate an assignment consisting of 5 questions that cover the material from the unit and make sure each question gets more challenging.
         
@@ -40,8 +31,11 @@ def getAssignment():
     """
 
     response = create_chat_model_prompt(prompt)
-    print(response)
-    # Parsing and cleaning up the content
+    usage = response["usage"]
+    usage["uid"] = uid
+
+    pushUsage(usage)
+
     content_dict = parse_response_content(response)
 
     return content_dict, 200

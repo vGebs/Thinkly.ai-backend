@@ -1,6 +1,7 @@
 from flask import request, Blueprint
 from helpers import create_chat_model_prompt, parse_response_content
 import json
+from billing import pushUsage
 
 # Create a Blueprint instance
 bp = Blueprint("courseCreation", __name__)
@@ -8,7 +9,14 @@ bp = Blueprint("courseCreation", __name__)
 
 @bp.route("/courseCreation/generateCurriculum", methods=["POST"])
 def generateCurriculum():
-    userPrompt = request.get_json()
+    input = request.get_json()
+    userPrompt = input.get("prompt")
+    uid = input.get("uid")
+
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
+
     prompt = f"""
         Give this users prompt:
         {userPrompt},
@@ -24,6 +32,12 @@ def generateCurriculum():
     """
 
     response = create_chat_model_prompt(prompt)
+
+    usage = response["usage"]
+    usage["uid"] = uid
+
+    pushUsage(usage)
+
     content_dict = parse_response_content(response)
 
     return content_dict, 200
@@ -34,6 +48,12 @@ def generateSubTopicsForUnit():
     data = request.get_json()
     curriculum = data.get("curriculum")
     unitNumber = data.get("unitNumber")
+    uid = data.get("uid")
+
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
+
     prompt = f"""
         Given this curriculum:
         {curriculum},
@@ -47,6 +67,12 @@ def generateSubTopicsForUnit():
         Do not respond to this message, simply output the JSON object.
     """
     response = create_chat_model_prompt(prompt)
+
+    usage = response["usage"]
+    usage["uid"] = uid
+
+    pushUsage(usage)
+
     content_dict = parse_response_content(response)
 
     return content_dict, 200
@@ -57,6 +83,12 @@ def generateLessonsForSubunit():
     data = request.get_json()
     curriculum = data.get("curriculum")
     subunitNumber = data.get("subunitNumber")
+    uid = data.get("uid")
+
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
+
     prompt = f""" 
         Given this Curriculum:
         {curriculum},
@@ -74,7 +106,12 @@ def generateLessonsForSubunit():
     """
 
     response = create_chat_model_prompt(prompt)
-    print(response)
+
+    usage = response["usage"]
+    usage["uid"] = uid
+
+    pushUsage(usage)
+
     content_dict = parse_response_content(response)
 
     return content_dict, 200
@@ -85,6 +122,11 @@ def generateNotesForLesson():
     data = request.get_json()
     unit = data.get("unit")
     lessonNumber = data.get("lessonNumber")
+    uid = data.get("uid")
+
+    if not uid:
+        print("Failure: uid is empty.")
+        return {"error": "Failure: uid is empty"}, 422
 
     prompt = f""" 
         Given this unit:
@@ -104,7 +146,11 @@ def generateNotesForLesson():
     """
 
     response = create_chat_model_prompt(prompt)
-    print(response)
+    usage = response["usage"]
+    usage["uid"] = uid
+
+    pushUsage(usage)
+
     content_dict = parse_response_content(response)
 
     return content_dict, 200
