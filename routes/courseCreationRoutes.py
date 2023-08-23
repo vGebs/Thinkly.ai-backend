@@ -2,6 +2,7 @@ from flask import request, Blueprint
 from helpers import create_chat_model_prompt, parse_response_content
 import json
 from billing import pushUsage
+from datetime import datetime
 
 # Create a Blueprint instance
 bp = Blueprint("courseCreation", __name__)
@@ -35,7 +36,7 @@ def generateCurriculum():
 
     usage = response["usage"]
     usage["uid"] = uid
-
+    usage["timestamp"] = datetime.now()
     pushUsage(usage)
 
     content_dict = parse_response_content(response)
@@ -70,6 +71,7 @@ def generateSubTopicsForUnit():
 
     usage = response["usage"]
     usage["uid"] = uid
+    usage["timestamp"] = datetime.now()
 
     pushUsage(usage)
 
@@ -109,7 +111,7 @@ def generateLessonsForSubunit():
 
     usage = response["usage"]
     usage["uid"] = uid
-
+    usage["timestamp"] = datetime.now()
     pushUsage(usage)
 
     content_dict = parse_response_content(response)
@@ -148,7 +150,7 @@ def generateNotesForLesson():
     response = create_chat_model_prompt(prompt)
     usage = response["usage"]
     usage["uid"] = uid
-
+    usage["timestamp"] = datetime.now()
     pushUsage(usage)
 
     content_dict = parse_response_content(response)

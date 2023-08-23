@@ -2,6 +2,7 @@ from flask import request, Blueprint
 from helpers import create_chat_model_prompt, parse_response_content
 import json
 from billing import pushUsage
+from datetime import datetime
 
 # Create a Blueprint instance
 bp = Blueprint("assignmentCreation", __name__)
@@ -33,6 +34,7 @@ def getAssignment():
     response = create_chat_model_prompt(prompt)
     usage = response["usage"]
     usage["uid"] = uid
+    usage["timestamp"] = datetime.now()
 
     pushUsage(usage)
 
