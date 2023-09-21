@@ -1,0 +1,40 @@
+# Version Control
+.git/
+.gitignore
+.svn/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment and Config
+.env
+*.config
+*.json
+
+# Logs and Databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test and Docs
+tests/
+docs/
+.travis.yml
+
+# Virtual Environment
+venv/
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*.swn

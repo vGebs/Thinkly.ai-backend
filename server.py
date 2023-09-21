@@ -3,6 +3,7 @@ from flask import Flask
 from dotenv import load_dotenv
 import json
 import os
+import base64
 import openai
 import firebase_admin
 from firebase_admin import firestore
@@ -12,11 +13,19 @@ from firebase_admin import credentials, initialize_app
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Load your service account key JSON string from the environment variable
-firebase_service_key = os.getenv("FIREBASE_SERVICE_KEY")
+# # Load your service account key JSON string from the environment variable
+# firebase_service_key = os.getenv("FIREBASE_SERVICE_KEY")
+# service_account_key = json.loads(firebase_service_key)
+
+# # Initialize the Firebase Admin SDK with the service account key
+# cred = credentials.Certificate(service_account_key)
+# initialize_app(cred)
+
+firebase_service_key_base64 = os.getenv("FIREBASE_SERVICE_KEY")
+firebase_service_key_base64 = firebase_service_key_base64  # .strip()
+firebase_service_key = base64.b64decode(firebase_service_key_base64).decode("utf-8")
 service_account_key = json.loads(firebase_service_key)
 
-# Initialize the Firebase Admin SDK with the service account key
 cred = credentials.Certificate(service_account_key)
 initialize_app(cred)
 

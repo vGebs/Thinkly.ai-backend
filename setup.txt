@@ -11,3 +11,15 @@ VS Code: If you are using Visual Studio Code, select the Python interpreter from
     by clicking on the Python version in the bottom left corner (or by using the command 
     palette (Cmd/Ctrl+Shift+P), and typing/selecting Python: Select Interpreter). Then choose 
     the interpreter inside your venv.
+
+
+Issue: .env issues
+
+1. Openai key cannot have ' or " 
+2. The firestore key must be encoded then decoded in the app 
+
+When running the container locally we need to use this command:
+
+docker run --env-file ./.env -p 3000:3000 thinkly_backend
+
+We need to specify the .env because docker does not have that file in the container.
